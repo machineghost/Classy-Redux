@@ -27,3 +27,20 @@ In to:
         }
     }
     const {reducer} = new YourReducerBuilder();
+    
+Or, if you're not in to that whole ES6 thing ...
+
+    function YourReducerBuilder () {};
+    YourReducerBuilder.prototype.addFoo = function(action, state) {
+        return Object.assign({}, state, {foo: action.id});
+    }
+    YourReducerBuilder.prototype.addBar = function(action, state) {
+        return Object.assign({}, state, {bar: action.id});
+    }
+    YourResourceBuilder.prototype = new ReducerBuilder();
+    const reducer = new YourReducerBuilder().reducer;
+
+
+Easily combine multiple resource builders and your middleware (in any order) to create a store:
+
+    const {store} = new StoreBuilder(fooBuilder, thunk, barBuilder, bazBuilder, window.devToolsExtension);
