@@ -1,10 +1,11 @@
 {
   "name": "classy-redux",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Uses OOP to simplify Redux reducer logic",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "babel src/ClassyRedux.js --out-file src/index.js",
+    "test": "mocha --compilers js:babel-register --ui bdd test/ClassyRedux.spec.js"
   },
   "repository": {
     "type": "git",
