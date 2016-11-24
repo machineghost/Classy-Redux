@@ -1,0 +1,36 @@
+{
+  "name": "classy_redux",
+  "version": "1.0.0",
+  "description": "Uses OOP to simplify Redux reducer logic",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/machineghost/Classy-Redux.git"
+  },
+  "keywords": [
+    "redux"
+  ],
+  "author": "Jeremy Walker",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/machineghost/Classy-Redux/issues"
+  },
+  "homepage": "https://github.com/machineghost/Classy-Redux#readme",
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-plugin-transform-class-properties": "^6.11.5",
+    "babel-plugin-transform-es2015-destructuring": "^6.18.0",
+    "babel-plugin-transform-object-rest-spread": "^6.16.0",
+    "babel-preset-es2015": "^6.14.0",
+    "chai": "^3.5.0",
+    "mocha": "^3.1.2",
+    "sinon": "^1.17.6"
+  },
+  "dependencies": {
+    "lodash": "^4.17.2",
+    "redux": "^3.6.0"
+  }
+}
