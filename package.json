@@ -1,5 +1,5 @@
 {
-  "name": "classy_redux",
+  "name": "classy-redux",
   "version": "1.0.0",
   "description": "Uses OOP to simplify Redux reducer logic",
   "main": "index.js",
