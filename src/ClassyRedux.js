@@ -6,8 +6,6 @@ import {
 import _ from 'lodash';
 
 export class ReducerBuilder {
-    initialState = {};
-
     constructor() {
         this.build();
     }
@@ -88,7 +86,7 @@ export class ReducerBuilder {
      * @param action - an object with a type property that desscribes the action
      * @returns {array|object} - the new state
      */
-    reducer(oldState = this.initialState, action) {
+    reducer(oldState, action) {
         let newState = this.clone(oldState);
         if (this._isReduxInitAction(action)) return newState;
 

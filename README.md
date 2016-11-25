@@ -100,19 +100,6 @@ The `ResourceBuilder` `build` method is called in the class's `constructor`, and
         this.reducer = undoable(this.reducer, {debug: false, filter: distinctState()});
     }
 
-### How can I set an initial state for the reducer to use if none is provided?
-
-By default if no state is provided `ReducerBuilder` will generate a new state of `{}`.  You can override this and give the `ReducerBuilder` a different initial state by setting it as a property:
-
-     // With the babel transformation "transform-class-properties"
-     class FooResourceBuilder extends ResourceBuilder {
-         initialState = {initialValue: 'some value'};
-     }
-     
-     // Without "transform-class-properties"
-     class FooResourceBuilder extends ResourceBuilder {}
-     FooResourceBuilder.prototype.initialState = {initialValue: 'some value'};
-
 ### What if I want to share variables between `beforeAction`/`afterAction` and the action handler?
 
 Because the reducer is bound to its `ReducerBuilder`, you *could* define properties in one method and use them in another:
@@ -152,7 +139,7 @@ However Classy Redux also offers an optional StoreBuilder that lets you easily c
 
     const {store} = new StoreBuilder(fooBuilder, thunk, barBuilder, bazBuilder, window.devToolsExtension);
     
-To use the `StoreBuilder` you must define a `stateName` property for each `ReducerBuilder` to serve as the key for the reducer when it is passed to `combineReducers`.  This can be set the same way as the `initialState`:
+To use the `StoreBuilder` you must define a `stateName` property for each `ReducerBuilder` to serve as the key for the reducer when it is passed to `combineReducers`.  This can be set as follows:
 
     // With the babel transformation "transform-class-properties"
      class FooResourceBuilder extends ResourceBuilder {

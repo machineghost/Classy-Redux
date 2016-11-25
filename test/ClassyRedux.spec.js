@@ -48,15 +48,6 @@ describe(`ClassyRedux`, () => {
             });
         });
         describe(`#reducer`, () => {
-            describe(`when no state is passed`, () => {
-                it(`uses the ReducerBuilder's initial state (when one is defined)`, () => {
-                    builder.initialState = {a: 1};
-                    expect(builder.reducer(undefined, {type: `NOOP_ACTION`})).to.eql({a: 1});
-                });
-                it(`uses an initial state of {} (when one is not defined)`, () => {
-                    expect(builder.reducer(undefined, {type: `NOOP_ACTION`})).to.eql({});
-                });
-            });
             describe(`when passed a Redux-generated ("@@redux") action`, () => {
                 it(`returns a clone of the previous state`, () => {
                     builder.clone = () => `foo`;
