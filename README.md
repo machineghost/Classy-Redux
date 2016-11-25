@@ -3,28 +3,65 @@ A "Classier" system of creating Redux reducer functions
 
 ## Basic Example
 
-Classy Redux let's you convert this:
+Classy Redux let's you convert this (from the Redux To Do example):
 
-    const FooReducer = function(state={}, action) {
-         switch(action.type) {
-             case 'ADD_BAR':
-                 return {...state, bar: id};
-             case 'ADD_BAZ':
-                return {...state, bazs: [... state.bazs, id]};
-         }
+    const todo = (state = {}, action) => {
+        switch (action.type) {
+            case 'ADD_TODO':
+                return {
+                    id: action.id,
+                    text: action.text,
+                    completed: false
+                }
+            case 'TOGGLE_TODO':
+                if (state.id !== action.id) {
+                    return state
+                }
+    
+                return Object.assign({}, state, {
+                    completed: !state.completed
+                })
+    
+            default:
+                return state
+        }
+    }
+    const todos = (state = [], action) => {
+        switch (action.type) {
+            case 'ADD_TODO':
+                return [
+                    ...state,
+                    todo(undefined, action)
+                ]
+            case 'TOGGLE_TODO':
+                return state.map(t =>
+                    todo(t, action)
+                )
+            default:
+                return state
+        }
     }
     
 Into this:
 
-    class FooBuilder extends ReducerBuilder {
-        addBar({id}, state) {
-            state.bar = id;
+    class TodosBuilder extends ReducerBuilder {
+        addTodo({id, text}, state) {
+            state.push(this._buildTodo(action);
         }
-        addBaz({id}, state) {
-            state.bazs.push(new Baz(id});
+        _buildTodo({id, text}) {
+            return {completed: false, id, text};
+        }
+        _toggleCompletion(id, todo) {
+            if (todo.id === id)  {
+                todo.completed = !todo.completed;
+            }
+            return todo;
+        }
+        toggleTodo({id}, state) {
+            return state.map(t => this._toggleCompletion(id, t));
         }
     }
-    const {reducer} = new YourReducerBuilder();
+    const todoReducer = new TodoBuilder(`todos`, {}).reducer;
 
 ## There's no `switch`/`case`, `return`, or immutability?
 
