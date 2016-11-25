@@ -100,6 +100,34 @@ The `ResourceBuilder` `build` method is called in the class's `constructor`, and
         this.reducer = undoable(this.reducer, {debug: false, filter: distinctState()});
     }
 
+### What if I want to share variables between `beforeAction`/`afterAction` and the action handler?
+
+Because the reducer is bound to its `ReducerBuilder`, you *could* define properties in one method and use them in another:
+
+    beforeEach() {
+        this._count = 0;
+    }
+    _doSomethingRepeatedly(things) {
+        things.forEach(() => this._count += 1);
+    }
+    someAction(action, state) {
+        this._doSomethingRepeatedly(action.things);
+        return this._count;
+    }
+
+However, the problem with doing that is that you might accidentally leave a property value from one call and have it affect another, later call.  To avoid this Classy Redux recommends not defining properties directly on the `ReducerBuilder` instance,  but instead on its `reduction` property.  This property is automatically reset before every action is handled, so you never have to worry about "cleaning it up":
+
+    beforeEach() {
+         this.reduction.count = 0;
+    }
+    _doSomethingRepeatedly(things) {
+        things.forEach(() => this.reduction.count += 1);
+    }
+    someAction(action, state) {
+        this._doSomethingRepeatedly(action.things);
+        return this.reduction.count;
+    }
+
 ## StoreBuilder
 
 Reducers created from a `ReducerBuilder` can be used directly with Redux's `createStore`:
