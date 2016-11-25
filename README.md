@@ -61,7 +61,7 @@ Into this:
             return state.map(t => this._toggleCompletion(id, t));
         }
     }
-    const todoReducer = new TodoBuilder(`todos`, {}).reducer;
+    const todoReducer = new TodoBuilder().reducer;
 
 ### How do I get it?
 
