@@ -65,27 +65,27 @@ Into this:
 
 ### If there's no `switch`/`case`, how does it know how to handle actions?
 
-When a `RecourceBuilder.reducer` receives an action it passes it to the *action handler* for that action's type.  The handler for an action is simply the method of the class with same name as the type (converted to camel case), eg. `{type: 'ADD_FOO_BAR'}` to `addFooBar`.
+When a `RecourceBuilder.reducer` receives an action it passes it to the *action handler* for that action's type.  The handler for an action is simply the method of the class with a name matching the (converted to camel case) action type.  For instance, an action`{type: 'ADD_FOO_BAR'}` would be handled by an `addFooBar` method.
 
 If no corresponding method can be found for a provided action, Classy Redux throws an error.
 
-### If there's no return, how do you return the new state?
+### Why does addTodo have no `return` and looks like it's mutating state?
 
-Before Classy Redux passes the action to its handler it calls its `clone` method on the previous reducer state to generate a new version of it.  By default the `clone` method is just `(oldState) => _.cloneDeep(oldState)`, but you can override it to use a different clone algorithim (or none at all, if you would prefer to create a new state separately in each action handler).
+Before Classy Redux passes the action to its handler it ensures that the old state doesn't get modified by calling its `clone` method to generate a new version of the state from the previous one.  By default the `clone` method is just `(oldState) => _.cloneDeep(oldState)`, but you can override it to use a different clone algorithim (or none at all, if you would prefer to create a new state separately in each action handler).
 
-Once it has cloned the previous state the new cloned state is passed (along with the action) to the action handler.  If the action handler returns a "truthy" value, that value will become the new state.  If the handler doesn't return a value though the `reducer` will still return the cloned new state.
+Once it has cloned the previous state the new cloned state is passed (along with the action) to the action handler.  If the action handler returns a "truthy" value, that value will become the new state.  If the handler *doesn't* return a value, the `reducer` will instead return the cloned state object.
 
-Thanks to the power of mutation, action handlers can simply modify the provided state object in-place without returning anything:
+This allows action handlers to simply modify the provided state object in-place, without returning anything, and their changes will still be applied:
 
     addBar(action, state) {
         state.bars.push(bar);
     }
 
-### What about immutability?
+### What about immutability or pre/post-processing?
 
-Classy Redux provides two methods that you can override to add logic which runs before or after every action handler: `afterAction` and `beforeAction`.  These methods work just like an action handler, in that they are passed `action` and `state` arguments and any truthy value they return will be used as the new state, but they are run before/after each action is handled.
+Classy Redux provides two methods that you can override to add logic before or after every action handler: `afterAction` and `beforeAction`.  These methods work just like an action handler, in that they are passed `action` and `state` arguments, and any truthy value they return will be used as the new state.
 
-If you wanted to use an immutability library to ensure that your state object doesn't get modified you could override the `afterAction` method to make the about-to-be-returned state immutable:
+If you wish to use an immutability library you can override the `afterAction` method to apply an immutability function to the state after its action handler finishes:
 
     afterEach(action, state) {
         return Immutable.Map(state);
