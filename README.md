@@ -83,7 +83,7 @@ This allows action handlers to simply modify the provided state object in-place,
 
 ### What are the constructors arguments for?
 
-A `ReducerBuilder` takes two arguments when it is instantiated: it's "state name", and it's initial state.  The state name is only used if the optional `StoreBuilder` (see below) is used.  The initial state can be an object which will serve as the initial state of the reducer, if no state is passed in.  If an initial state object is not provided `{}` we be used as the reducers initial state.
+A `ReducerBuilder` takes two arguments when it is instantiated: it's "state name", and it's initial state.  The state name is only used if the optional `StoreBuilder` (see below) is used.  The initial state is the object which will serve as the initial state of the reducer, if no state is passed in to it.  If an initial state object is not provided `{}` will be used as the reducer's initial state.
 
 ### What about immutability or pre/post-processing?
 
