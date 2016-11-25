@@ -81,6 +81,10 @@ This allows action handlers to simply modify the provided state object in-place,
         state.bars.push(bar);
     }
 
+### What are the constructors arguments for?
+
+A `ReducerBuilder` takes two arguments when it is instantiated: it's "state name", and it's initial state.  The state name is only used if the optional `StoreBuilder` (see below) is used.  The initial state can be an object which will serve as the initial state of the reducer, if no state is passed in.  If an initial state object is not provided `{}` we be used as the reducers initial state.
+
 ### What about immutability or pre/post-processing?
 
 Classy Redux provides two methods that you can override to add logic before or after every action handler: `afterAction` and `beforeAction`.  These methods work just like an action handler, in that they are passed `action` and `state` arguments, and any truthy value they return will be used as the new state.
@@ -138,3 +142,5 @@ Reducers created from a `ReducerBuilder` can be used directly with Redux's `crea
 However Classy Redux also offers an optional StoreBuilder that lets you easily combine as many resource builders and middleware as you want, in any order:
 
     const {store} = new StoreBuilder(fooBuilder, thunk, barBuilder, bazBuilder, window.devToolsExtension);
+    
+`StoreBuilder` uses the state name given to each `ReducerBuilder` as that reducer's key in the object it passes to `combineReducers`.
