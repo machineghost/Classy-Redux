@@ -73,7 +73,7 @@ If you are not using NPM (you really should be) you can download the file `src/i
 
 ### If there's no `switch`/`case`, how does it know how to handle actions?
 
-When a `RecourceBuilder.reducer` receives an action it passes it to the *action handler* for that action's type.  The handler for an action is simply the method of the class with a name matching the (converted to camel case) action type.  For instance, an action`{type: 'ADD_FOO_BAR'}` would be handled by an `addFooBar` method.
+When a `ResourceBuilder.reducer` receives an action it uses the action's type to find a matching *action handler*.  To find the handler the `ReducerBuilder` simply looks for a method with the same name as the action type, converted to camel case.  For instance, an action`{type: 'ADD_FOO_BAR'}` would be handled by the `ReducerBuilder`'s `addFooBar` method.
 
 If no corresponding method can be found for a provided action, Classy Redux throws an error.
 
