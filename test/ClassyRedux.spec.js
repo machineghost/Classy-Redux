@@ -1,6 +1,8 @@
 import {expect} from 'chai';
 import sinon from 'sinon';
-import {ReducerBuilder, StoreBuilder} from '../src/index';
+import {ReducerBuilder, StoreBuilder} from '../src/index.js';
+
+// DON'T FORGET: These tests run against the *BUILT* version of the library
 
 describe(`ClassyRedux`, () => {
     let sandbox;
@@ -13,12 +15,22 @@ describe(`ClassyRedux`, () => {
     describe(`ReducerBuilder`, () => {
         let builder;
         beforeEach(() => {
-            builder = new ReducerBuilder(`foo`);
+            builder = new ReducerBuilder({a: 1}, `foo`);
             ReducerBuilder.prototype.someAction = sandbox.stub();
         });
         describe(`#constructor`, () => {
             it(`can be instantiated`, () => {
                 expect(builder).to.be.ok;
+            });
+            it(`stores the provided state name (if any)`, () => {
+                expect(builder.stateName).to.equal(`foo`);
+            });
+            it(`stores the provided initial state (if any)`, () => {
+                expect(builder.initialState).to.eql({a: 1});
+            });
+            it(`uses a default initial state of {} if none is provided`, () => {
+                builder = new ReducerBuilder();
+                expect(builder.initialState).to.eql({});
             });
         });
         describe(`#build`, () => {
@@ -41,12 +53,6 @@ describe(`ClassyRedux`, () => {
             });
         });
         describe(`#reducer`, () => {
-            describe(`if no state name has been defined for the builder`, () => {
-                it(`throws an error`, () => {
-                    delete builder.stateName;
-                    expect(() => builder.reducer()).to.throw(`must have a stateName`);
-                });
-            });
             describe(`when passed a Redux-generated ("@@redux") action`, () => {
                 it(`returns a clone of the previous state`, () => {
                     builder.clone = () => `foo`;

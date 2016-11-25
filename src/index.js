@@ -20,8 +20,9 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var ReducerBuilder = exports.ReducerBuilder = function () {
-    function ReducerBuilder(stateName) {
-        var initialState = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    function ReducerBuilder() {
+        var initialState = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+        var stateName = arguments[1];
 
         _classCallCheck(this, ReducerBuilder);
 
@@ -132,8 +133,6 @@ var ReducerBuilder = exports.ReducerBuilder = function () {
             var oldState = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.initialState;
             var action = arguments[1];
 
-            if (!this.stateName) throw new Error('Every reducer builder must have a stateName to ' + 'serve as its key in the store state');
-
             var newState = this.clone(oldState);
             if (this._isReduxInitAction(action)) return newState;
 
@@ -213,6 +212,7 @@ var StoreBuilder = exports.StoreBuilder = function () {
                 return new Builder();
             });
             this._reducers = this._reducerBuilders.reduce(function (reducers, reducerBuilder) {
+                if (!reducerBuilder.stateName) throw new Error('Every reducer builder must have a ' + 'stateName to  serve as its key in ' + 'the store state');
                 reducers[reducerBuilder.stateName] = reducerBuilder.reducer;
                 return reducers;
             }, {});

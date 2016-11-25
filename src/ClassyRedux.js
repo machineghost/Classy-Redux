@@ -6,7 +6,7 @@ import {
 import _ from 'lodash';
 
 export class ReducerBuilder {
-    constructor(stateName, initialState = {}) {
+    constructor(initialState = {}, stateName) {
         this.initialState = initialState;
         this.stateName = this.stateName || stateName;
         this.build();
@@ -89,9 +89,6 @@ export class ReducerBuilder {
      * @returns {array|object} - the new state
      */
     reducer(oldState = this.initialState, action) {
-        if (!this.stateName) throw new Error(`Every reducer builder must have a stateName to ` +
-                                              `serve as its key in the store state`);
-
         let newState = this.clone(oldState);
         if (this._isReduxInitAction(action)) return newState;
 
@@ -147,6 +144,9 @@ export class StoreBuilder {
         //       ... but it makes testing a whole lot easier (vs. using local variables)
         this._reducerBuilders = this._reducerBuilderClasses.map((Builder) => new Builder());
         this._reducers = this._reducerBuilders.reduce((reducers, reducerBuilder) => {
+            if (!reducerBuilder.stateName) throw new Error(`Every reducer builder must have a `+
+                                                           `stateName to  serve as its key in `+
+                                                           `the store state`);
             reducers[reducerBuilder.stateName] = reducerBuilder.reducer;
             return reducers;
         }, {});
