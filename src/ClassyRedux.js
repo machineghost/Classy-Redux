@@ -6,9 +6,9 @@ import {
 import _ from 'lodash';
 
 export class ReducerBuilder {
-    constructor(initialState = {}, stateName) {
-        this.initialState = initialState;
-        this.stateName = this.stateName || stateName;
+    initialState = {};
+
+    constructor() {
         this.build();
     }
 

@@ -15,22 +15,17 @@ describe(`ClassyRedux`, () => {
     describe(`ReducerBuilder`, () => {
         let builder;
         beforeEach(() => {
-            builder = new ReducerBuilder({a: 1}, `foo`);
+            class TestReducerBuilder extends ReducerBuilder {
+                noopAction() {
+
+                }
+            }
+            builder = new TestReducerBuilder();
             ReducerBuilder.prototype.someAction = sandbox.stub();
         });
         describe(`#constructor`, () => {
             it(`can be instantiated`, () => {
                 expect(builder).to.be.ok;
-            });
-            it(`stores the provided state name (if any)`, () => {
-                expect(builder.stateName).to.equal(`foo`);
-            });
-            it(`stores the provided initial state (if any)`, () => {
-                expect(builder.initialState).to.eql({a: 1});
-            });
-            it(`uses a default initial state of {} if none is provided`, () => {
-                builder = new ReducerBuilder();
-                expect(builder.initialState).to.eql({});
             });
         });
         describe(`#build`, () => {
@@ -53,6 +48,15 @@ describe(`ClassyRedux`, () => {
             });
         });
         describe(`#reducer`, () => {
+            describe(`when no state is passed`, () => {
+                it(`uses the ReducerBuilder's initial state (when one is defined)`, () => {
+                    builder.initialState = {a: 1};
+                    expect(builder.reducer(undefined, {type: `NOOP_ACTION`})).to.eql({a: 1});
+                });
+                it(`uses an initial state of {} (when one is not defined)`, () => {
+                    expect(builder.reducer(undefined, {type: `NOOP_ACTION`})).to.eql({});
+                });
+            });
             describe(`when passed a Redux-generated ("@@redux") action`, () => {
                 it(`returns a clone of the previous state`, () => {
                     builder.clone = () => `foo`;

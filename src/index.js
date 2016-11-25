@@ -21,13 +21,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var ReducerBuilder = exports.ReducerBuilder = function () {
     function ReducerBuilder() {
-        var initialState = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-        var stateName = arguments[1];
-
         _classCallCheck(this, ReducerBuilder);
 
-        this.initialState = initialState;
-        this.stateName = this.stateName || stateName;
+        this.initialState = {};
+
         this.build();
     }
 
