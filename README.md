@@ -81,10 +81,6 @@ This allows action handlers to simply modify the provided state object in-place,
         state.bars.push(bar);
     }
 
-### What are the constructors arguments for?
-
-A `ReducerBuilder` takes two arguments when it is instantiated: it's "state name", and it's initial state.  The state name is only used if the optional `StoreBuilder` (see below) is used.  The initial state is the object which will serve as the initial state of the reducer, if no state is passed in to it.  If an initial state object is not provided `{}` will be used as the reducer's initial state.
-
 ### What about immutability or pre/post-processing?
 
 Classy Redux provides two methods that you can override to add logic before or after every action handler: `afterAction` and `beforeAction`.  These methods work just like an action handler, in that they are passed `action` and `state` arguments, and any truthy value they return will be used as the new state.
@@ -103,6 +99,19 @@ The `ResourceBuilder` `build` method is called in the class's `constructor`, and
         super.build();
         this.reducer = undoable(this.reducer, {debug: false, filter: distinctState()});
     }
+
+### How can I set an initial state for the reducer to use if none is provided?
+
+By default if no state is provided `ReducerBuilder` will generate a new state of `{}`.  You can override this and give the `ReducerBuilder` a different initial state by setting it as a property:
+
+     // With the babel transformation "transform-class-properties"
+     class FooResourceBuilder extends ResourceBuilder {
+         initialState = {initialValue: 'some value'};
+     }
+     
+     // Without "transform-class-properties"
+     class FooResourceBuilder extends ResourceBuilder {}
+     FooResourceBuilder.prototype.initialState = {initialValue: 'some value'};
 
 ### What if I want to share variables between `beforeAction`/`afterAction` and the action handler?
 
@@ -143,4 +152,13 @@ However Classy Redux also offers an optional StoreBuilder that lets you easily c
 
     const {store} = new StoreBuilder(fooBuilder, thunk, barBuilder, bazBuilder, window.devToolsExtension);
     
-`StoreBuilder` uses the state name given to each `ReducerBuilder` as that reducer's key in the object it passes to `combineReducers`.
+To use the `StoreBuilder` you must define a `stateName` property for each `ReducerBuilder` to serve as the key for the reducer when it is passed to `combineReducers`.  This can be set the same way as the `initialState`:
+
+    // With the babel transformation "transform-class-properties"
+     class FooResourceBuilder extends ResourceBuilder {
+         stateName = 'foo';
+     }
+     
+     // Without "transform-class-properties"
+     class FooResourceBuilder extends ResourceBuilder {}
+     FooResourceBuilder.prototype.stateName = 'foo';
