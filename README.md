@@ -63,15 +63,13 @@ Into this:
     }
     const todoReducer = new TodoBuilder(`todos`, {}).reducer;
 
-## There's no `switch`/`case`, `return`, or immutability?
-
-### How are actions routed?
+### If there's no `switch`/`case`, how does it know how to handle actions?
 
 When a `RecourceBuilder.reducer` receives an action it passes it to the *action handler* for that action's type.  The handler for an action is simply the method of the class with same name as the type (converted to camel case), eg. `{type: 'ADD_FOO_BAR'}` to `addFooBar`.
 
 If no corresponding method can be found for a provided action, Classy Redux throws an error.
 
-### How do you return the new state?
+### If there's no return, how do you return the new state?
 
 Before Classy Redux passes the action to its handler it calls its `clone` method on the previous reducer state to generate a new version of it.  By default the `clone` method is just `(oldState) => _.cloneDeep(oldState)`, but you can override it to use a different clone algorithim (or none at all, if you would prefer to create a new state separately in each action handler).
 
