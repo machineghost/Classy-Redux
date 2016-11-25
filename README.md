@@ -63,6 +63,14 @@ Into this:
     }
     const todoReducer = new TodoBuilder(`todos`, {}).reducer;
 
+### How do I get it?
+
+If you are using NPM you can simply use the npm install command to add classy-redux:
+
+    npm install --save classy-redux
+    
+If you are not using NPM (you really should be) you can download the file `src/index.js` directly.
+
 ### If there's no `switch`/`case`, how does it know how to handle actions?
 
 When a `RecourceBuilder.reducer` receives an action it passes it to the *action handler* for that action's type.  The handler for an action is simply the method of the class with a name matching the (converted to camel case) action type.  For instance, an action`{type: 'ADD_FOO_BAR'}` would be handled by an `addFooBar` method.
