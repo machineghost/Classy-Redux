@@ -88,6 +88,7 @@ Into this:
         
         addTodo(action, state) {
             state.push(this._buildTodo(action);
+            // If you modify the state in-place you don't need to return anything
         }
         // (Optional) Use non-action handling helper methods
         _buildTodo({id, text}) {
@@ -95,6 +96,7 @@ Into this:
         }
         
         toggleTodo(action, state) {
+            // If you do return a "truthy" value it becomes the new state
             return state.map((id, todo) {
                 if (todo.id === action.id)  {
                     todo.completed = !todo.completed;
