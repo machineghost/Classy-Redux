@@ -88,7 +88,8 @@ Into this:
         
         addTodo(action, state) {
             state.push(this._buildTodo(action);
-            // If you modify the state in-place you don't need to return anything
+            // If you modify the state the action handler doesn't need to return anything;
+            // that state will be returned
         }
         // (Optional) Use non-action handling helper methods
         _buildTodo({id, text}) {
@@ -96,7 +97,7 @@ Into this:
         }
         
         toggleTodo(action, state) {
-            // If you do return a "truthy" value it becomes the new state
+            // If an action handler return a ("truthy") value that value becomes the new state
             return state.map((id, todo) {
                 if (todo.id === action.id)  {
                     todo.completed = !todo.completed;
@@ -148,6 +149,7 @@ Into this:
             this.reduction.todoInProgress.isUrgent = this.reduction.isUrgent;
             
             // Make state immutable before returning it
+            // (As with action handlers, values returned from beforeAction/afterAction become the new state)
             return Immutable.Map(state);
         }
         
