@@ -127,7 +127,7 @@ Into this:
             return {completed: false, id, text};
         }
    
-        // Optional Step #2: Use BeforeAction/AfterAction to share commmon logic between actions:
+        // Optional Step #2: Use BeforeAction/AfterAction to trigger logic before/after the action handler:
         
         beforeAction(action, state) {
             this.reduction.todoInProgress = {};
