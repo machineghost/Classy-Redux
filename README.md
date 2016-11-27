@@ -45,7 +45,7 @@ Classy Redux let's you convert this (from the Redux To Do example):
 Into this:
 
     class TodosBuilder extends ReducerBuilder {
-        addTodo({id, text}, state) {
+        addTodo(action}, state) {
             state.push(this._buildTodo(action);
         }
         _buildTodo({id, text}) {
@@ -63,13 +63,94 @@ Into this:
     }
     const todoReducer = new TodoBuilder().reducer;
 
-### How do I get it?
+### How do I use it?
 
-If you are using NPM you can simply use the npm install command to add classy-redux:
-
+    // Step 0: Install it:
     npm install --save classy-redux
+   
+    // Step 1: Import it
+    import {ReducerBuilder} from 'classy-redux';
+   
+    // Step 2: Write your action creators as normal
     
-If you are not using NPM (you really should be) you can download the file `src/index.js` directly.
+    let nextTodoId = 0
+    export const addTodo = (text) => ({type: 'ADD_TODO', id: nextTodoId++, text});
+    export const toggleTodo = (id) => {type: 'TOGGLE_TODO', id});
+    
+    // Step 3: Extend ReducerBuilder
+    class TodoReducerBuilder extends ReducerBuilder {
+    
+        // Step 4: Add action handlers with names matching the action type
+        //         (action handlers are passed the action and a copy of the state)
+        
+        addTodo(action, state) {
+            state.push(this._buildTodo(action);
+        }
+        // (Optional) Use non-action handling helper methods
+        _buildTodo({id, text}) {
+            return {completed: false, id, text};
+        }
+        
+        toggleTodo(action, state) {
+            return state.map((id, todo) {
+                if (todo.id === action.id)  {
+                    todo.completed = !todo.completed;
+                }
+                return todo;
+            });
+        }
+    }
+    
+    // Step 5: Instantiate your ReducerBuilder to access your new reducer function
+    export default new TodoReducerBuilder().reducer;
+    
+    // Optional
+    
+    class TodoReducerBuilder extends ReducerBuilder {
+        // Optional Step #1: Use "reduction" to share state between methods:
+        //                   (State only lives for one reducer cycle)
+        addTodo(action, state) {
+            this.reduction.currentAction = action;
+            state.push(this._buildTodo();
+        }
+        _buildTodo() {
+            const {id, text} = this.reduction.currentAction;
+            return {completed: false, id, text};
+        }
+   
+        // Optional Step #2: Use BeforeAction/AfterAction to share commmon logic between actions:
+        
+        beforeAction(action, state) {
+            this.reduction.todoInProgress = {};
+            this.reduction.isUrgent = false;
+            state.push(this.reduction.todoInProgress);
+        }
+        addTodo(action, state) {
+            // this.reduction.todoInProgress wass created in beforeAction
+            this.reduction.todoInProgress.completed = false;
+            this.reduction.todoInProgress.id = action.id;
+            this.reduction.todoInProgress.text = action.text;
+        }
+        addUrgentTodo(action, state) {
+            // This will get used by the afterAction
+            this.reduction.isUrgent = true;
+            this.addTodo(action, state);
+        }
+        afterAction(action, state) {
+            this.reduction.todoInProgress.isUrgent = this.reduction.isUrgent;
+            
+            // Make state immutable before returning it
+            return Immutable.Map(state);
+        }
+        
+        // Optional Step 3: Override build to decorate the reducer
+        build() {
+            super.build();
+            // Decorate reducer using Redux Undo
+            this.reducer = undoable(this.reducer, {debug: false, filter: distinctState()});
+        }
+        
+
 
 ### If there's no `switch`/`case`, how does it know how to handle actions?
 
