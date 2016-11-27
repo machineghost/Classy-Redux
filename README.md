@@ -66,9 +66,11 @@ Into this:
 ### How do I use it?
 
     // Step 0: Install it:
+    
     npm install --save classy-redux
    
     // Step 1: Import it
+    
     import {ReducerBuilder} from 'classy-redux';
    
     // Step 2: Write your action creators as normal
@@ -78,6 +80,7 @@ Into this:
     export const toggleTodo = (id) => {type: 'TOGGLE_TODO', id});
     
     // Step 3: Extend ReducerBuilder
+    
     class TodoReducerBuilder extends ReducerBuilder {
     
         // Step 4: Add action handlers with names matching the action type
@@ -102,13 +105,16 @@ Into this:
     }
     
     // Step 5: Instantiate your ReducerBuilder to access your new reducer function
+    
     export default new TodoReducerBuilder().reducer;
     
     // Optional
     
     class TodoReducerBuilder extends ReducerBuilder {
+    
         // Optional Step #1: Use "reduction" to share state between methods:
         //                   (State only lives for one reducer cycle)
+        
         addTodo(action, state) {
             this.reduction.currentAction = action;
             state.push(this._buildTodo();
@@ -144,6 +150,7 @@ Into this:
         }
         
         // Optional Step 3: Override build to decorate the reducer
+        
         build() {
             super.build();
             // Decorate reducer using Redux Undo
