@@ -11,10 +11,6 @@ var _redux = require('redux');
 
 var _lodash = require('lodash');
 
-var _lodash2 = _interopRequireDefault(_lodash);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -23,19 +19,23 @@ var ReducerBuilder = exports.ReducerBuilder = function () {
     function ReducerBuilder() {
         _classCallCheck(this, ReducerBuilder);
 
-        this.initialState = {};
-
         this.build();
     }
 
     /**
-     * This method (which by default is a no-op) can be overriden to add any sort of
-     * "post-processing" after an action handler has been applied
+     * Provides the initial state of the reducer.  This initial state can either be a static object or
+     * a getter method which returns the initial state (like the default implementation).
      */
 
 
     _createClass(ReducerBuilder, [{
         key: 'afterAction',
+
+
+        /**
+         * This method (which by default is a no-op) can be overriden to add any sort of
+         * "post-processing" after an action handler has been applied
+         */
         value: function afterAction(action, newState) {}
 
         /**
@@ -65,7 +65,7 @@ var ReducerBuilder = exports.ReducerBuilder = function () {
     }, {
         key: 'clone',
         value: function clone(oldState) {
-            return _lodash2.default.cloneDeep(oldState);
+            return _.cloneDeep(oldState);
         }
 
         /**
@@ -91,7 +91,7 @@ var ReducerBuilder = exports.ReducerBuilder = function () {
                 // There's no way to convert @@ to camel case, so discard it (and ditto for "/")
                 actionType = actionType.substr(2).replace('/');
             }
-            return this[_lodash2.default.camelCase(actionType)];
+            return this[_.camelCase(actionType)];
         }
 
         /**
@@ -126,18 +126,19 @@ var ReducerBuilder = exports.ReducerBuilder = function () {
 
     }, {
         key: 'reducer',
-        value: function reducer() {
-            var oldState = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.initialState;
-            var action = arguments[1];
-
-            var newState = this.clone(oldState);
+        value: function reducer(oldState, action) {
+            var newState = this.clone((0, _lodash.isUndefined)(oldState) ? this.initialState : oldState);
             if (this._isReduxInitAction(action)) return newState;
 
             var handler = this._getHandler(action.type);
             // Any (non-Redux initialization) action should have a matching handler
-            if (!handler) throw new Error('Invalid action type: ' + action.type);
+            //if (!handler) throw new Error(`Invalid action type: ${action.type}`);
+            // The problem with the above thinking is that we can have multiple reducers, and any
+            // given action may not work for any given reducer ... but that shouldn't throw an error
 
             // Create a variable to hold data that will only live for a single reducer cycle
+            // TODO: Switch to this._ = {};
+            // or (backwards compatible): this._  = this.reduction = {};
             this.reduction = {};
 
             newState = this.beforeAction(action, newState) || newState;
@@ -151,6 +152,11 @@ var ReducerBuilder = exports.ReducerBuilder = function () {
          * the last state given to Redux as a convenience, which can be accessed through this getter.
          */
 
+    }, {
+        key: 'initialState',
+        get: function get() {
+            return {};
+        }
     }, {
         key: 'state',
         get: function get() {
