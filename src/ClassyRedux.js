@@ -3,11 +3,23 @@ import {
     compose,
     createStore
 } from 'redux';
-import _ from 'lodash';
+import {
+    camelCase,
+    cloneDeep,
+    isUndefined
+} from 'lodash';
 
 export class ReducerBuilder {
     constructor() {
         this.build();
+    }
+
+  /**
+   * Provides the initial state of the reducer.  This initial state can either be a static object or
+   * a getter method which returns the initial state (like the default implementation).
+   */
+    get initialState() {
+        return {};
     }
 
     /**
@@ -87,7 +99,7 @@ export class ReducerBuilder {
      * @returns {array|object} - the new state
      */
     reducer(oldState, action) {
-        let newState = this.clone(oldState);
+        let newState = this.clone(isUndefined(oldState) ? this.initialState : oldState);
         if (this._isReduxInitAction(action)) return newState;
 
         const handler = this._getHandler(action.type);
@@ -95,6 +107,8 @@ export class ReducerBuilder {
         if (!handler) throw new Error(`Invalid action type: ${action.type}`);
 
         // Create a variable to hold data that will only live for a single reducer cycle
+        // TODO: Switch to this._ = {};
+        // or (backwards compatible): this._  = this.reduction = {};
         this.reduction = {};
 
         newState = this.beforeAction(action, newState) || newState;
