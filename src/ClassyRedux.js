@@ -104,7 +104,9 @@ export class ReducerBuilder {
 
         const handler = this._getHandler(action.type);
         // Any (non-Redux initialization) action should have a matching handler
-        if (!handler) throw new Error(`Invalid action type: ${action.type}`);
+        //if (!handler) throw new Error(`Invalid action type: ${action.type}`);
+        // The problem with the above thinking is that we can have multiple reducers, and any
+        // given action may not work for any given reducer ... but that shouldn't throw an error
 
         // Create a variable to hold data that will only live for a single reducer cycle
         // TODO: Switch to this._ = {};
