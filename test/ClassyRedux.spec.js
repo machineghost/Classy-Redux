@@ -16,6 +16,9 @@ describe(`ClassyRedux`, () => {
         let builder;
         beforeEach(() => {
             class TestReducerBuilder extends ReducerBuilder {
+                get initialState() {
+                    return { fake: 'state' };
+                }
                 noopAction() {
 
                 }
@@ -51,14 +54,14 @@ describe(`ClassyRedux`, () => {
             describe(`when passed a Redux-generated ("@@redux") action`, () => {
                 it(`returns a clone of the previous state`, () => {
                     builder.clone = () => `foo`;
-                    expect(builder.reducer({}, {type: "@@redux/INIT"})).to.equal(`foo`);
+                    expect(builder.reducer({}, { type: "@@redux/INIT" })).to.equal(`foo`);
                 });
             });
-            describe(`when passed a non-Redux-generated (not "@@redux") action`, () => {
+            describe(`when passed a non-Redux-generated (ie. not "@@redux") action`, () => {
                 describe(`#when there is no matching action handler`, () => {
-                    it(`throws an error`, () => {
-                        const invalidReduce = () => builder.reducer({}, {type: `foo`});
-                        expect(invalidReduce).to.throw(`Invalid action type`);
+                    it(`returns the existing state`, () => {
+                        const newState = builder.reducer({ fake: 'state' }, { type: `invalid` });
+                        expect(newState).to.eql({ fake: 'state' });
                     });
                 });
                 describe(`#when there is a matching action handler`, () => {
@@ -88,14 +91,14 @@ describe(`ClassyRedux`, () => {
                         expect(builder.state).to.equal(`new state`);
                     });
                     it(`calls the beforeAction/handler/afterAction in the correct order`, () => {
-                        builder.clone = () => ({a: 0});
-                        builder.beforeAction.returns({a: 1});
-                        builder.someAction.returns({a: 2});
+                        builder.clone = () => ({ a: 0 });
+                        builder.beforeAction.returns({ a: 1 });
+                        builder.someAction.returns({ a: 2 });
                         builder.reducer({}, {type: `SOME_ACTION`});
 
-                        expect(builder.beforeAction.calledWith({a: 0}));
-                        expect(builder.someAction.calledWith({a: 1}));
-                        expect(builder.afterAction.calledWith({a: 2}));
+                        expect(builder.beforeAction.calledWith({ a: 0 }));
+                        expect(builder.someAction.calledWith({ a: 1 }));
+                        expect(builder.afterAction.calledWith({ a: 2 }));
                     });
                 });
             });

@@ -48,7 +48,7 @@ export class ReducerBuilder {
      * Returns a clone of the provided state
      */
     clone(oldState) {
-        return _.cloneDeep(oldState);
+        return cloneDeep(oldState);
     }
 
     /**
@@ -71,7 +71,7 @@ export class ReducerBuilder {
             // There's no way to convert @@ to camel case, so discard it (and ditto for "/")
             actionType = actionType.substr(2).replace('/');
         }
-        return this[_.camelCase(actionType)];
+        return this[camelCase(actionType)];
     }
 
     /**
@@ -103,14 +103,10 @@ export class ReducerBuilder {
         if (this._isReduxInitAction(action)) return newState;
 
         const handler = this._getHandler(action.type);
-        // Any (non-Redux initialization) action should have a matching handler
-        //if (!handler) throw new Error(`Invalid action type: ${action.type}`);
-        // The problem with the above thinking is that we can have multiple reducers, and any
-        // given action may not work for any given reducer ... but that shouldn't throw an error
+        if (!handler) return newState;
 
         // Create a variable to hold data that will only live for a single reducer cycle
-        // TODO: Switch to this._ = {};
-        // or (backwards compatible): this._  = this.reduction = {};
+        // TODO: Change "reduction" to "_"? this._ = {}; is shorter/easier
         this.reduction = {};
 
         newState = this.beforeAction(action, newState) || newState;

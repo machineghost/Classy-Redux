@@ -65,7 +65,7 @@ var ReducerBuilder = exports.ReducerBuilder = function () {
     }, {
         key: 'clone',
         value: function clone(oldState) {
-            return _.cloneDeep(oldState);
+            return (0, _lodash.cloneDeep)(oldState);
         }
 
         /**
@@ -91,7 +91,7 @@ var ReducerBuilder = exports.ReducerBuilder = function () {
                 // There's no way to convert @@ to camel case, so discard it (and ditto for "/")
                 actionType = actionType.substr(2).replace('/');
             }
-            return this[_.camelCase(actionType)];
+            return this[(0, _lodash.camelCase)(actionType)];
         }
 
         /**
@@ -132,6 +132,7 @@ var ReducerBuilder = exports.ReducerBuilder = function () {
 
             var handler = this._getHandler(action.type);
             // Any (non-Redux initialization) action should have a matching handler
+            if (!handler) return newState;
             //if (!handler) throw new Error(`Invalid action type: ${action.type}`);
             // The problem with the above thinking is that we can have multiple reducers, and any
             // given action may not work for any given reducer ... but that shouldn't throw an error
